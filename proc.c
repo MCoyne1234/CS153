@@ -311,6 +311,63 @@ wait(int *status)
   }
 }
 
+// Wait for a child with specified pid to exit.
+// Return the pid of the terminated process, or -1 if error/does not exist.
+int
+waitpid(int pid, int *status, int options)
+{
+  struct proc *p;
+  int waitProc;
+
+  aquire(&ptable.lock);
+  for(;;){
+    //havekids = 0;
+    waitprocess = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->pid != pid)
+        continue;
+      waitprocess = 1;
+      
+      if(p->wcount < sizeof(p->wpid))
+      {
+        p->wpid[p->wcount] = proc;
+        p->wcount++;
+      }
+
+      if(p->state == ZOMBIE, ){
+        // Found one.
+        pid = p->pid;
+        kfree(p->kstack);
+        p->kstack = 0;
+
+        freevm(p->pgdir);
+        p->pid = 0;
+        p->parent = 0;
+        p->name[0] = 0;
+        p->killed = 0;
+        p->state = UNUSED;
+        release(&ptable.lock);
+        return pid;
+      }
+    }
+
+    // No point waiting if pid does not exist.
+    if(!waitprocess){
+      release(&ptable.lock);
+      return -1;
+    }
+    
+    if(proc->killed)
+    {
+      realease(&ptable.lock);
+      return -1;
+    }
+
+    // Wait for process to exit.  (See wakeup1 call in proc_exit.)
+    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+  }
+}
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
