@@ -317,9 +317,9 @@ int
 waitpid(int pid, int *status, int options)
 {
   struct proc *p;
-  int waitProc;
+  int waitprocess;
 
-  aquire(&ptable.lock);
+  acquire(&ptable.lock);
   for(;;){
     //havekids = 0;
     waitprocess = 0;
@@ -328,13 +328,13 @@ waitpid(int pid, int *status, int options)
         continue;
       waitprocess = 1;
       
-      if(p->wcount < sizeof(p->wpid))
+      /*if(p->wcount < sizeof(p->wpid))
       {
         p->wpid[p->wcount] = proc;
         p->wcount++;
       }
-
-      if(p->state == ZOMBIE, ){
+      */
+      if(p->state == ZOMBIE ){
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
@@ -356,15 +356,15 @@ waitpid(int pid, int *status, int options)
       release(&ptable.lock);
       return -1;
     }
-    
+    /*
     if(proc->killed)
     {
-      realease(&ptable.lock);
+      release(&ptable.lock);
       return -1;
     }
-
+    */
     // Wait for process to exit.  (See wakeup1 call in proc_exit.)
-    sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+    sleep(p, &ptable.lock);  //DOC: wait-sleep
   }
 }
 
