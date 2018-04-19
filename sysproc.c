@@ -14,18 +14,25 @@ sys_fork(void)
 }
 
 int
-sys_exit(int exStatus)
+sys_exit(void)
 {
-  exit(exStatus);
+  int status;
+  exit(status);
   return 0;  // not reached
 }
 
 int
-sys_wait(void)
+sys_wait(int)
 {
   return wait(0);
 }
 
+//
+int
+sys_waitpid(int,)
+{
+  return wait(0);
+}
 int
 sys_kill(void)
 {
