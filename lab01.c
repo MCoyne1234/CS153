@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
  
   int waitPid(void){ 
    
-// /*   
+ /*   
    int ret_pid, exit_status;
     int i;
     int pid_a[5]={0, 0, 0, 0, 0};
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[4]);
     ret_pid = waitpid(pid_a[4], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
-// */
+ */
  int garbage = 0;   
  printf(1, "This is a function %d\n", garbage);
   
