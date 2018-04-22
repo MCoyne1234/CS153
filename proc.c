@@ -352,7 +352,7 @@ waitpid(int pid, int *status, int options)
     }
 
     // No point waiting if pid does not exist.
-    if(!waitprocess){
+    if(waitprocess){
       release(&ptable.lock);
       return -1;
     }
