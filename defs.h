@@ -117,11 +117,12 @@ void            scheduler(void) __attribute__((noreturn));
 void            sched(void);
 void            setproc(struct proc*);
 void            sleep(void*, struct spinlock*);
+//int            sleep(void*, struct spinlock*);
 void            userinit(void);
 int             wait(int *status);
-int             waitpid(int pid, int *status, int options); // Lab01
 void            wakeup(void*);
 void            yield(void);
+int             waitpid(int pid, int *status, int options); // Lab01
 
 // swtch.S
 void            swtch(struct context**, struct context*);

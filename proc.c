@@ -224,6 +224,7 @@ fork(void)
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
 // until its parent calls wait(0) to find out it exited.
+//void
 void 
 exit(int status)
 {
@@ -330,12 +331,12 @@ waitpid(int pid, int *status, int options)
         continue;
       waitprocess = 1;
       
-      /*if(p->wcount < sizeof(p->wpid))
-      {
-        p->wpid[p->wcount] = proc;
-        p->wcount++;
-      }
-      */
+      //if(p->wcount < sizeof(p->wpid))
+      //{
+      //  p->wpid[p->wcount] = proc;
+      //  p->wcount++;
+      //}
+      //
       if(p->state == ZOMBIE ){
         // Found one.
         pid = p->pid;
@@ -351,20 +352,18 @@ waitpid(int pid, int *status, int options)
         release(&ptable.lock);
         return pid;
       }
+      //else{
+      //  p->waitpid_parent[p->waitpid_parentindex]=proc->pid;
+      //}
     }
 
     // No point waiting if pid does not exist.
-    if(waitprocess){
+    if(waitprocess || p->killed){
       release(&ptable.lock);
+      if(status) *status = -1;
       return -1;
     }
-    /*
-    if(proc->killed)
-    {
-      release(&ptable.lock);
-      return -1;
-    }
-    */
+    
     // Wait for process to exit.  (See wakeup1 call in proc_exit.)
     sleep(p, &ptable.lock);  //DOC: wait-sleep
   }
