@@ -14,12 +14,12 @@ sys_fork(void)
 }
 
 int
-sys_exit(void)
+sys_exit()
 {
   int status;
   argint(0, &status);
   exit(status);
-  return 0;  // not reached
+  return -2;  // not reached
 }
 
 int
@@ -31,15 +31,15 @@ sys_wait(void)
 }
 
 int
-sys_waitpid(void)
+sys_waitpid(void) // Lab01
 {
   int pid; 
   int *status; 
   int options;
 
   argint(0, &pid);
-  argptr(0,(char**) &status, sizeof(int*) );
-  argint(0, &options);
+  argptr(1,(char**) &status, sizeof(int*) );
+  argint(2, &options);
   return waitpid(pid, status, options);
 }
 int
