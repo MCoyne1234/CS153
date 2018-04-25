@@ -1,14 +1,8 @@
 #include "types.h"
-#include "stat.h"
-//#include "proc.h"
 #include "user.h"
-#include "syscall.h"
-//#include "defs.h"
 
 int exitWait(void);
 int waitPid(void);
-//extern int waitpid(int, int *, int);
-//inline int waitpid(int pid,int *status, int options) {return 1;}
 
 int main(int argc, char *argv[]) {
  printf(1, "####################################################\n");
@@ -48,7 +42,6 @@ int main(int argc, char *argv[]) {
       } 
     } else if (pid > 0) { // only the parent exeecutes this code
         ret_pid = wait(&exit_status);
-        //ret_pid = waitpid(pid, &exit_status, 0);
         
       printf(1, " - This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
       } else { // something went wrong with fork system call
@@ -61,9 +54,10 @@ int main(int argc, char *argv[]) {
  
   int waitPid(void){ 
     
-   int ret_pid, exit_status=0;
+   int ret_pid, exit_status;
     int i;
     int pid_a[5]={0, 0, 0, 0, 0};
+    int ret_val = 4;
        
  // use this part to test wait(int pid, int* status, int options)
     printf(1, "Step 2: testing waitpid(int pid, int* status, int options):\n");
@@ -72,28 +66,29 @@ int main(int argc, char *argv[]) {
       pid_a[i] = fork();
       
       if (pid_a[i] == 0) { // only the child executed this code 
-      printf(1, " - The is child with PID# %d and I will exit with status %d\n", getpid(), 0);
-      exit(0);
+
+      printf(1, " - This is the child with PID# %d and I will exit with status %d\n", getpid(), ret_val);
+      exit(ret_val);
       }
     }
     
-    //sleep(5);
+    sleep(5);
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[3]);
     ret_pid = waitpid(pid_a[3], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
-   //sleep(5);
+    sleep(5);
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[1]);
     ret_pid = waitpid(pid_a[1], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
-    //sleep(5);
+    sleep(5);
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[2]);
     ret_pid = waitpid(pid_a[2], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
-    //sleep(5);
+    sleep(5);
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[0]);
     ret_pid = waitpid(pid_a[0], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
-    //sleep(5);
+    sleep(5);
     printf(1, " - This is the parent: Now waiting for child with PID# %d\n",pid_a[4]);
     ret_pid = waitpid(pid_a[4], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
