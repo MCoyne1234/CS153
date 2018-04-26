@@ -251,7 +251,7 @@ exit(int status)
 
   acquire(&ptable.lock);
 
-  // Parent might be sleeping in wait(0).
+  // Parent might be sleeping in wait().
   wakeup1(curproc->parent);
 
   // Pass abandoned children to init.
@@ -300,7 +300,6 @@ wait(int *status)
         p->state = UNUSED;
         if(status) {
           *status = p->exitStatus;
-          p->exitStatus = 0;
         }
         release(&ptable.lock);
         return pid;
@@ -308,7 +307,7 @@ wait(int *status)
     }
 
     // No point waiting if we don't have any children.
-    if(!havekids || curproc->killed){
+    if(havekids == 0|| curproc->killed){
       release(&ptable.lock);
       return -1;
     }
@@ -355,7 +354,6 @@ waitpid(int pid, int *status, int options)
         p->state = UNUSED;
         if(status) {
           *status = p->exitStatus;
-          p->exitStatus = 0;
         }
         release(&ptable.lock);
         return pid;
@@ -366,7 +364,7 @@ waitpid(int pid, int *status, int options)
     }
 
     // No point waiting if pid does not exist.
-    if(waitprocess || p->killed){
+    if(waitprocess == 0 || p->killed){
       release(&ptable.lock);
       if(status) *status = -1;
       return -1;

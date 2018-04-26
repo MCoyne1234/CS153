@@ -30,20 +30,22 @@ int main(int argc, char *argv[]) {
     // use this part to test exit(int status) and wait(int* status)
     printf(1, "Step 1: testing exit(int status) and wait(int* status):\n");
    
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 3; i++) {
       pid = fork();
       if (pid == 0) { // only the child executed this code
-      if (i == 0) {
-        printf(1, " - This is child with PID# %d and I will exit with status %d\n", getpid(), 0);
-        exit(0);
-      }else {
-          printf(1, " - This is child with PID# %d and I will exit with status %d\n" ,getpid(), -1);
-          exit(-1);
-      } 
-    } else if (pid > 0) { // only the parent exeecutes this code
+        if (i == 0) {
+          printf(1, " - This is child with PID# %d and I will exit with status %d\n", getpid(), 0);
+          exit(0);
+        }else if (i == 1){
+            printf(1, " - This is child with PID# %d and I will exit with status %d\n" ,getpid(), -1);
+            exit(-1);
+        }else{
+            printf(1, " - This is child with PID# %d and I will exit with status %d\n" ,getpid(), 1);
+            exit(1);
+        } 
+      } else if (pid > 0) { // only the parent exeecutes this code
         ret_pid = wait(&exit_status);
-        
-      printf(1, " - This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
+        printf(1, " - This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
       } else { // something went wrong with fork system call
           printf(2, " - Error using fork\n");
           exit(-1);
@@ -54,10 +56,11 @@ int main(int argc, char *argv[]) {
  
   int waitPid(void){ 
     
-   int ret_pid, exit_status;
+    int ret_pid, exit_status;
     int i;
     int pid_a[5]={0, 0, 0, 0, 0};
     int ret_val = 4;
+    int noPID = -999;
        
  // use this part to test wait(int pid, int* status, int options)
     printf(1, "Step 2: testing waitpid(int pid, int* status, int options):\n");
@@ -93,5 +96,15 @@ int main(int argc, char *argv[]) {
     ret_pid = waitpid(pid_a[4], &exit_status, 0);
     printf(1, " - This is the parent: Child# %d has exited with status %d\n",ret_pid, exit_status);
  
+    
+    printf(1, "Step 3: testing waitpid with a pid that does not exist:\n");
+    ret_pid = waitpid(noPID, &exit_status, 0);
+    if(ret_pid == -1){
+      printf(1, "The PID %d does not exist:\n", noPID);
+     }
+    else{
+      printf(1, "This should never print.\n");
+    }
+  sleep(5);
   return 0;
   }
