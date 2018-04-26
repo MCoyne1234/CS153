@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
         } 
       } else if (pid > 0) { // only the parent exeecutes this code
         ret_pid = wait(&exit_status);
-        printf(1, " - This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
+      printf(1, " - This is the parent: child with PID# %d has exited with status %d\n", ret_pid, exit_status);
       } else { // something went wrong with fork system call
           printf(2, " - Error using fork\n");
           exit(-1);
