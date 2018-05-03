@@ -43,6 +43,14 @@ sys_waitpid(void) // Lab01
   return waitpid(pid, status, options);
 }
 int
+sys_changePriority(void)
+{
+ //int pid;
+ //argint(0)
+ //myproc()->priority;
+
+}
+int
 sys_kill(void)
 {
   int pid;
