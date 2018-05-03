@@ -325,6 +325,8 @@ waitpid(int pid, int *status, int options)
   struct proc *p;
   int waitprocess;
 
+  if(pid == myproc()->pid) return -1;
+
   acquire(&ptable.lock);
   for(;;){
     //havekids = 0;
