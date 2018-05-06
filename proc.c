@@ -87,8 +87,9 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
+  p->priority = 4; // lab2, set priority to 4
   p->pid = nextpid++;
-
+  
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -385,6 +386,28 @@ waitpid(int pid, int *status, int options)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+int changePriority(int pid, int priority )
+{
+ struct proc *p;
+ //should you be able to change your own priority?
+ if(pid == myproc()->pid) return -1;
+
+ acquire(&ptable.lock);
+ for(p=ptable.proc; p<&ptable.proc[NPROC];p++)
+ {
+   if(p->pid!=pid)
+      continue;
+    else
+       p->priority=priority;
+       break;
+  }
+  release(&ptable.lock);
+  return pid;
+ }
+
+
+
+}
 void
 scheduler(void)
 {
