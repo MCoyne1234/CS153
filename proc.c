@@ -457,26 +457,32 @@ scheduler(void) // LAB02
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    for(int runPriority = 0; runPriority < 32 ; ++runPriority ){
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE){
+           continue;
+        }else if( p->priority > runPriority){
+          ++(p->age);
+          if( ( p->age % 31) > 0 ){ changePriority( p->priority - 1 ); }
+        }else if( p->priority == runPriority){         
+          // Switch to chosen process.  It is the process's job
+          // to release ptable.lock and then reacquire it
+          // before jumping back to us.
+          c->proc = p;
+          switchuvm(p);
+          p->state = RUNNING;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+          swtch(&(c->scheduler), p->context);
+          switchkvm();
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
-    }
+          // Process is done running for now.
+          // It should have changed its p->state before coming back.
+          c->proc = 0;
+          changePriority( p->priority + 1 );
+        }
+      }
+  }
     release(&ptable.lock);
-
   }
 }
 // Enter scheduler.  Must hold only ptable.lock
