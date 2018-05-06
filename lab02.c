@@ -3,34 +3,45 @@
 
 int main(int argc, char *argv[])
 {
+   //printf("alive1");
    int PScheduler(void);
+   //printf("alive2");
    PScheduler();
+   //printf("alive3");
    // End of test
     exit(0);
 }   
 int PScheduler(void)
-{ 	             		 
+{ 	
+ //printf("alive4");
+             		 
 // use this part to test the priority scheduler.
 // Assuming that the priorities range between range between 0 to 63
 // 0 is the highest priority. All processes have a default priority of 20 
-//
- int pid, ret_pid, exit_status;
+ int pid,mypid, ret_pid, exit_status;
  int i,j,k;
  	             		               
- printf(1, "\n  Step 2: testing the priority scheduler and setpriority(int priority)) systema call:\n");
+printf(1, "\n  Step 2: testing the priority scheduler and changePriority(int pid,int priority) systema call:\n");
  printf(1, "\n  Step 2: Assuming that the priorities range between range between 0 to 31\n");
  printf(1, "\n  Step 2: 0 is the highest priority. All processes have a default priority of 10\n");
  printf(1, "\n  Step 2: The parent processes will switch to priority 0\n");
- setPriority(0);
+ //setPriority(0);
+ pid=getpid();
+
+ printf(1,"alive5\n");
+ changePriority(pid,0);
+// printf("alive6");
  for (i = 0; i <  3; i++)
  {
   pid = fork();
-  if (pid > 0 ) 
+  if (pid > 0 ) //parent forks twice
     continue;
   else if ( pid == 0) 
   {
    printf(1, "\n Hello! this is child# %d and I will change my priority to %d \n",getpid(),60-20*i);
-   setPriority(30-10*i);
+  // setPriority(30-10*i);
+   mypid=getpid();
+   changePriority(mypid,30-10*i);
    for (j=0;j<50000;j++)
    {	
     for(k=0;k<10000;k++) 

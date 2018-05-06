@@ -87,7 +87,7 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
-  p->priority = 4; // lab2, set priority to 4
+  p->priority = 10; // lab2, set priority to 4
   p->pid = nextpid++;
   
   release(&ptable.lock);
@@ -390,8 +390,6 @@ int changePriority(int pid, int priority )
 {
  struct proc *p;
  //should you be able to change your own priority?
- if(pid == myproc()->pid) return -1;
-
  acquire(&ptable.lock);
  for(p=ptable.proc; p<&ptable.proc[NPROC];p++)
  {
@@ -403,10 +401,6 @@ int changePriority(int pid, int priority )
   }
   release(&ptable.lock);
   return pid;
- }
-
-
-
 }
 void
 scheduler(void)
