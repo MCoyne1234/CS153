@@ -29,10 +29,10 @@ printf(1, "\n  Step 2: testing the priority scheduler and changePriority(int pid
  //setPriority(0);
  pid=getpid();
 
- printf(1,"alive5 %d\n",getPri());
+ //printf(1,"alive5 %d\n",getPri());
  changePriority(pid,0);
  //changePriority(0);
- printf(1,"alive6 %d\n",getPri());
+ //printf(1,"alive6 %d\n",getPri());
 
  for (i = 0; i <  3; i++)
  {

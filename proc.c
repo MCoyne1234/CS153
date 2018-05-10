@@ -432,19 +432,21 @@ scheduler(void) // LAB02
   struct cpu *c = mycpu();
   c->proc = 0;
 
+  int runPriority = 64;
   for(;;){
-  int oldPriority = 64; // LAB02
+    runPriority = 64;
     // Enable interrupts on this processor.
     sti();
     
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    
     for( p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if( p->state != RUNNABLE ){
         continue;
       }  
-      if( p->priority < oldPriority ){
-        oldPriority = p->priority; 
+      if( p->priority < runPriority ){
+        runPriority = p->priority; 
       }
     }
 
@@ -453,21 +455,30 @@ scheduler(void) // LAB02
 
       if(p->state != RUNNABLE){
          continue;
-      }else if( p->priority == oldPriority){         
+      }else if( p->priority == runPriority){         
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
-        // before jumping back to us.        
+        // before jumping back to us.       
+
+        p->age = 0; 
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
         swtch(&(c->scheduler), p->context);
         switchkvm();
-
+        
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-      }
-    }
+      }else {
+        ++(p->age);
+        if( (p->age) % 64 == 0 ){ 
+          p->age = 0;
+          ++(p->priority);
+          //changePriority( p->pid ,(p->priority) +1 );
+        }
+       }
+     }
     release(&ptable.lock);
   }
 }
@@ -671,3 +682,4 @@ procdump(void)
     cprintf("\n");
   }
 }
+
