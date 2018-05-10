@@ -473,7 +473,6 @@ scheduler(void) // LAB02
     }
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      //if (p->state == SLEEPING) cprintf("SLEEPER.\n");
 
       if(p->state != RUNNABLE){
          continue;
@@ -492,16 +491,15 @@ scheduler(void) // LAB02
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-      }//else {
+      }else {
         ++(p->age);
-        if( (p->age) % 64 == 0 ){ 
+        if( (p->age) % 10 == 0 ){ 
           p->age = 0;
-          ( p->priority = p->priority - 1 );
-          break;
-          //
-          //if(runPriority < p->priority) runPriority = p->priority;
+          if(p->priority > 0) p->priority = p->priority - 1 ;
+          if (p->priority == runPriority) --(p->priority);
+          runPriority = 64;
         }
-       //}
+       }
      }
     release(&ptable.lock);
   }
