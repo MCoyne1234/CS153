@@ -23,3 +23,4 @@
 #define SYS_waitpid 22 // Lab added DEFS
 #define SYS_changePriority 23 //lab2 added
 #define SYS_getPri 24
+#define SYS_yield 25

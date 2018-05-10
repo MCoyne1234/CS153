@@ -425,6 +425,28 @@ scheduler(void)
 }
 */
 ///*
+///*
+int // LAB02 
+changePriority(int pid, int priority){
+  struct proc *p;
+  int oldPriority = myproc()->priority;
+
+  if( priority < 0 || priority > 63) return -1;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){ 
+      p->priority = priority;  
+    }else continue;
+  }
+  release(&ptable.lock);
+
+  if( priority > oldPriority ){ 
+    yield();
+  }
+  return 0;
+} 
+//*/
 void
 scheduler(void) // LAB02
 {
@@ -470,40 +492,20 @@ scheduler(void) // LAB02
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-      }else {
+      }//else {
         ++(p->age);
         if( (p->age) % 64 == 0 ){ 
           p->age = 0;
-          ++(p->priority);
-          //changePriority( p->pid ,(p->priority) +1 );
+          ( p->priority = p->priority - 1 );
+          break;
+          //
+          //if(runPriority < p->priority) runPriority = p->priority;
         }
-       }
+       //}
      }
     release(&ptable.lock);
   }
 }
-//*/
-///*
-int // LAB02 
-changePriority(int pid, int priority){
-  struct proc *p;
-  int oldPriority = myproc()->priority;
-
-  if( priority < 0 || priority > 63) return -1;
-
-  acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    if(p->pid == pid){ 
-      p->priority = priority;  
-    }else continue;
-  }
-  release(&ptable.lock);
-
-  if( priority > oldPriority ){ 
-    yield();
-  }
-  return 0;
-} 
 //*/
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores

@@ -1,16 +1,24 @@
 #include "types.h"
 #include "user.h"
 
+
+int PScheduler(void);
+int AgeTest(void);
+
 int main(int argc, char *argv[])
 {
-   //printf("alive1");
-   int PScheduler(void);
-   //printf("alive2");
+  if (atoi(argv[1]) == 1){
    PScheduler();
-   //printf("alive3");
+  }
+  else if (atoi(argv[1]) == 2){
+    AgeTest(); 
+  }
+
+  printf(1, "\ntype \"lab02 1\" to test the Scheduler, \"lab02 2\" to test priority age \n");
    // End of test
     exit(0);
-}   
+}
+   
 int PScheduler(void)
 { 	
  //printf("alive4");
@@ -74,4 +82,36 @@ printf(1, "\n  Step 2: testing the priority scheduler and changePriority(int pid
    printf(1,"\n if processes with highest priority finished first then its correct \n");
  }
 return 0;
+}
+
+int AgeTest(void){
+   int i;
+   int pid1 = -1; 
+   int pid2 = -1;
+   //int status;
+
+    printf( 1, " PID START: %d\n", getpid() );
+    pid1 = fork();
+    printf(1, "FORK 1 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+
+    if( pid1 != 0 ){
+        pid2 = fork();  
+        printf(1, "FORK 2 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+    }
+    if (pid2 != 0){
+      for( i = 1 ; i < 1029; ++i){
+        if( i % 64 == 0 ){ 
+          printf(1, "Pid %d has run 64 times.\n", getpid()); 
+          } yield(); 
+      }
+     //if( pid2 != 0 ) 
+      exit(0);
+    }else{
+      printf(1, "Pid %d will change priority to 12 (from default 10).\n", getpid() );
+      changePriority(getpid(), 12 );
+      printf(1, "This will print when the priority has been increased to 9:\nPriority == %d\n", getPri());
+      exit(0);
+    }
+
+    return 0;
 }

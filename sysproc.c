@@ -54,31 +54,6 @@ sys_changePriority(void)
   
   return changePriority(pid, priority);   
 }
-//*/
-/*
-int
-sys_changePriority(void) // LAB02
-{
-//cprintf("CHANGEPRIORTY: IN\n");
-  int newPriority, oldPriority;
-  oldPriority = myproc()->priority;
-//cprintf("FROM: %d\n", oldPriority);
-  if(argint(0, &newPriority) < 0)
-    return -1;
-//cprintf("TO: %d\n", newPriority);
-  if( newPriority >= 0 && newPriority < 64){
-    myproc()->priority = newPriority;  
-  }else return -1;
-  
-  if( newPriority > oldPriority ){ 
-//cprintf("YIELDING\n");
-    yield();
-    cprintf("RETURN FROM YIELD.\n");
-  }
-  //return changePriority( newPriority );
-  return oldPriority;   
-}
-*/
 int
 sys_kill(void)
 {
@@ -146,4 +121,9 @@ int
 sys_getPri(void)
 {
   return myproc()->priority;
+}
+int 
+sys_yield(void){
+  yield();
+  return 0;
 }

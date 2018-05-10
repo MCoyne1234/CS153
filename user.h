@@ -28,6 +28,7 @@ int waitpid(int pid, int *status, int options); // Lab01
 int changePriority(int pid, int priority); //lab02
 //int changePriority(int priority); // LAB02
 int getPri(void);
+int yield(void);
 
 // ulib.c
 int stat(char*, struct stat*);
