@@ -50,8 +50,11 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int exitStatus;              // The process exit status (Lab01)
-  int priority;                // The Scheduler Priority status (Lab2)
-  int age;                     // The age of the process (LAB2)
+  int priority;                // The Scheduler Priority status (LAB02)
+  int age;                     // The age of the process (LAB02)
+  uint startTic;                // The # of clock tic interrupts when the process started (LAB02)
+  uint waitTime;                // The # of cti between proc init and run.
+  uint turnAround;              // The # of cti between proc init and completion
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -86,34 +86,39 @@ return 0;
 int AgeTest(void){
    int i;
    int pid1 = -1; 
-   int pid2 = -1;
-   int parent = getpid();
-   int status;
+   //int pid2 = -1;
+   //int parent = getpid();
+   //int status;
 
-    printf( 1, " PID START: %d\n", getpid() );
+    printf( 1, " PID START: %d PRIORITY: %d \n", getpid(), getPri());
     pid1 = fork();
-    printf(1, "FORK 1 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+   // printf(1, "FORK 1 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+   // printf( 1, " PID START: %d PRIORITY: %d \n", getpid(), getPri());
     if( pid1 == 0 ){
-        pid2 = fork();  
-        printf(1, "FORK 2 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+        fork();
+        //pid2 = fork();  
+        //printf(1, "FORK 2 -> PID: %d pid1 = %d pid2 = %d.\n", getpid(), pid1, pid2);
+        //printf( 1, " PID START: %d PRIORITY: %d \n", getpid(), getPri());
     }else{
-      printf(1, "Pid OC%d will change priority to 12 (from default 10).\n", getpid() );
-      changePriority(getpid(), 12 );
-      printf(1, "This will print when the priority has been increased to 9:\nPriority == %d\n", getPri());
+      printf(1, "Pid %d will change priority to 13 (from default %d).\n", getpid(), getPri() );
+      changePriority(getpid(), 13 );
+      int pri = getPri();
+      printf(1, "This will print when the priority has been increased:\nPriority == %d\n", pri);
       //exit(0);
     }
 
     if (pid1 == 0){
       for( i = 1 ; i < 10001; ++i){
-          asm("nop");
-        if( i % 5000 == 0 ){ 
-          printf(1, "Pid %d has run 5000 times.\n", getpid()); 
-          } 
+        //asm("nop");
         yield(); 
+        if( i % 5000 == 0 ){ 
+          printf(1, "Pid %d has run 5000 times. %d\n", getpid(), uptime()); 
+          } 
       }
      //if( pid2 != 0 ) 
-      printf(1, "PID %d: Waiting for parent:\n", getpid()); 
-      waitpid(parent, &status, 0);
+      //printf(1, "PID %d: Waiting for parent:\n", getpid()); 
+      //waitpid(parent, &status, 0);
     }
+    wait(0);
     return 0;
 }

@@ -88,7 +88,10 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->priority = 10; // LAB02, set default priority to 10
+  p->priority = 10; // LAB02 set default priority to 10
+  p->waitTime = 0; // LAB02 TIMER
+  p->turnAround = 0; // LAB02 TIMER
+  p->startTic = ticks; // LAB02 TIMER
   
   release(&ptable.lock);
 
@@ -201,6 +204,9 @@ fork(void)
   np->parent = curproc;
   *np->tf = *curproc->tf;
   np->priority = curproc->priority; // LAB02, copy process priority.
+  np->waitTime = 0; //LAB02 TIMER;
+  np->turnAround = 0; //LAB02 TIMER;
+  np->startTic = ticks; // LAB02 TIMER;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -453,9 +459,10 @@ scheduler(void) // LAB02
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-
+  //int flip = 0;
   int runPriority = 64;
   for(;;){
+    //flip = 0;
     runPriority = 64;
     // Enable interrupts on this processor.
     sti();
@@ -466,7 +473,18 @@ scheduler(void) // LAB02
     for( p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if( p->state != RUNNABLE ){
         continue;
-      }  
+      }//else{
+        //++(p->age);
+        //if( (p->age) >= 1000 ){ 
+         // p->age = 0;
+          //if( p->priority > 0){ 
+            //p->priority = p->priority - 1 ;
+            //p = ptable.proc - 1;
+            //continue;
+          //}
+        //}
+      //}
+
       if( p->priority < runPriority ){
         runPriority = p->priority; 
       }
@@ -491,16 +509,17 @@ scheduler(void) // LAB02
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-      }else {
+      }else if( p->priority > runPriority ){
         ++(p->age);
-        if( (p->age) % 10 == 0 ){ 
+        if( (p->age) >= 2500 ){ 
           p->age = 0;
-          if(p->priority > 0) p->priority = p->priority - 1 ;
-          if (p->priority == runPriority) --(p->priority);
-          runPriority = 64;
+          if( p->priority > 0 ){ 
+            --( p->priority );
+            if( p->priority == runPriority){ --(p->priority); }
+          }
         }
-       }
-     }
+      }
+    }
     release(&ptable.lock);
   }
 }
