@@ -21,3 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_waitpid 22 // Lab added DEFS
+#define SYS_changePriority 23 //lab2 added
+#define SYS_getPri 24
