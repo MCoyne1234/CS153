@@ -6,7 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
+#include "date.h"
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -362,9 +362,13 @@ waitpid(int pid, int *status, int options)
         p->name[0] = 0;
         p->killed = 0;
         p->state = UNUSED;
-        if(status) {
+        //if(status) {
+        if(options == 0) {
           *status = p->exitStatus;
-        }
+        }else if (options == 1){
+          *status = p->turnAround;
+        }else *status = p->exitStatus;
+  
         release(&ptable.lock);
         return pid;
       }
@@ -461,6 +465,7 @@ scheduler(void) // LAB02
   c->proc = 0;
   //int flip = 0;
   int runPriority = 64;
+  int ticBegin = 0;
   for(;;){
     //flip = 0;
     runPriority = 64;
@@ -473,17 +478,7 @@ scheduler(void) // LAB02
     for( p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if( p->state != RUNNABLE ){
         continue;
-      }//else{
-        //++(p->age);
-        //if( (p->age) >= 1000 ){ 
-         // p->age = 0;
-          //if( p->priority > 0){ 
-            //p->priority = p->priority - 1 ;
-            //p = ptable.proc - 1;
-            //continue;
-          //}
-        //}
-      //}
+      }
 
       if( p->priority < runPriority ){
         runPriority = p->priority; 
@@ -497,21 +492,25 @@ scheduler(void) // LAB02
       }else if( p->priority == runPriority){         
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
-        // before jumping back to us.       
-
+        // before jumping back to us. 
+        ticBegin = ticks;      
+        if( p->waitTime == 0 ) p->waitTime = ticBegin - p->startTic;
         p->age = 0; 
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
         swtch(&(c->scheduler), p->context);
-        switchkvm();
+        switchkvm(); 
         
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
       }else if( p->priority > runPriority ){
         ++(p->age);
-        if( (p->age) >= 2500 ){ 
+        if( (p->age) >= 63 ){ 
+        //cmostime( (p->t1) );
+        //cprintf("HKASDK %d SASDAD %d", (p->t1)->second);
+         // cprintf("Now: %d Start: %d Wait: %d turnAround: %d\n", ticks , p->startTic, p->waitTime, p->turnAround);
           p->age = 0;
           if( p->priority > 0 ){ 
             --( p->priority );

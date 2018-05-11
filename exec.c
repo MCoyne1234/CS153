@@ -103,7 +103,7 @@ exec(char *path, char **argv)
   curproc->age = 0;
   curproc->waitTime = 0;
   curproc->turnAround = 0;
-  curproc->startTic = 0;
+  curproc->startTic = ticks;
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;

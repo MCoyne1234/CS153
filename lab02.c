@@ -85,10 +85,10 @@ return 0;
 
 int AgeTest(void){
    int i;
-   int pid1 = -1; 
-   //int pid2 = -1;
+   int pid1 = 0; 
+   //int pid2 = 0;
    //int parent = getpid();
-   //int status;
+   //int status = -2;
 
     printf( 1, " PID START: %d PRIORITY: %d \n", getpid(), getPri());
     pid1 = fork();
@@ -108,11 +108,11 @@ int AgeTest(void){
     }
 
     if (pid1 == 0){
-      for( i = 1 ; i < 10001; ++i){
+      for( i = 1 ; i < 193; ++i){
         //asm("nop");
         yield(); 
-        if( i % 5000 == 0 ){ 
-          printf(1, "Pid %d has run 5000 times. %d\n", getpid(), uptime()); 
+        if( i % 64 == 0 ){ 
+          printf(1, "Pid %d has run 64 times. %d\n", getpid(), uptime()); 
           } 
       }
      //if( pid2 != 0 ) 
@@ -120,5 +120,7 @@ int AgeTest(void){
       //waitpid(parent, &status, 0);
     }
     wait(0);
+    //waitpid( 3, &status, 1 );
+    //printf(1, "PID %d STATUS %d\n", getpid(), status); 
     return 0;
 }

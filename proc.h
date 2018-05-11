@@ -55,6 +55,8 @@ struct proc {
   uint startTic;                // The # of clock tic interrupts when the process started (LAB02)
   uint waitTime;                // The # of cti between proc init and run.
   uint turnAround;              // The # of cti between proc init and completion
+  struct rtcdate *t1;
+  //cmostime(t1);
 };
 
 // Process memory is laid out contiguously, low addresses first:
